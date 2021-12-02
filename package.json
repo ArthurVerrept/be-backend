@@ -1,0 +1,22 @@
+{
+  "name": "reatime-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "firmata": "^2.3.0",
+    "johnny-five": "^2.1.0",
+    "node-gyp": "^8.4.1",
+    "serialport": "^9.2.8",
+    "utf8": "^3.0.0",
+    "websocket": "^1.0.34",
+    "ws": "^8.3.0"
+  }
+}
