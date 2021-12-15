@@ -31,7 +31,7 @@ board.on('ready', function() {
             var sensor = new Sensor(i)
             sensorArray.push(sensor)
 
-            var led = new Led(i)
+            var led = new Led(i+2)
             ledArray[i] = led
             console.log(i)
             valueArray.push('OFF') 
@@ -41,8 +41,7 @@ board.on('ready', function() {
         
         sensorArray.forEach((sensor) => {
             sensor.on("change", function() {
-                console.log(this.value)
-                // console.log(this.pin, this.value)
+                console.log(this.pin, this.value)
                 if (this.value > 0 && valueArray[this.pin] === 'OFF') {
                     let send = {
                         sensor: this.pin,
@@ -60,7 +59,7 @@ board.on('ready', function() {
                         val: 'OFF'
                     }
                     valueArray[this.pin] = 'OFF'
-                    ledArray[this.pin].fadeOut()
+                    ledArray[this.pin].fadeOut(250)
                     connection.sendUTF(JSON.stringify(send));
                     console.log(this.pin, valueArray[this.pin])
                 }
