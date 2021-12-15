@@ -1,6 +1,7 @@
 var five = require('johnny-five')
 const http = require('http')
-const WebSocketServer = require('websocket').server
+const WebSocketServer = require('websocket').server;
+const { Led, Sensor } = require('johnny-five');
 
 var board = new five.Board()
 
@@ -21,16 +22,18 @@ board.on('ready', function() {
     wsServer.on('request', request => {
         connection = request.accept(null, request.origin)
         
-        const sensorAmount = 2
-
-        let sensorArray = []
-        for (let i = 0; i < sensorAmount; i++) {
-            var sensor = new five.Sensor(i)
-            sensorArray.push(sensor)
-        }
+        const sensorAmount = 9
 
         let valueArray = []
-        for (let i = 0; i < sensorArray.length; i++) {
+        let ledArray = {}
+        let sensorArray = []
+        for (let i = 0; i < sensorAmount; i++) {
+            var sensor = new Sensor(i)
+            sensorArray.push(sensor)
+
+            var led = new Led(i)
+            ledArray[i] = led
+            console.log(i)
             valueArray.push('OFF') 
         }
 
@@ -38,12 +41,14 @@ board.on('ready', function() {
         
         sensorArray.forEach((sensor) => {
             sensor.on("change", function() {
+                console.log(this.value)
                 // console.log(this.pin, this.value)
-                if (this.value > 200 && valueArray[this.pin] === 'OFF') {
+                if (this.value > 0 && valueArray[this.pin] === 'OFF') {
                     let send = {
                         sensor: this.pin,
                         val: 'ON'
                     }
+                    ledArray[this.pin].on()
                     valueArray[this.pin] = 'ON'
                     connection.sendUTF(JSON.stringify(send));
                     console.log(this.pin, valueArray[this.pin])
@@ -55,6 +60,7 @@ board.on('ready', function() {
                         val: 'OFF'
                     }
                     valueArray[this.pin] = 'OFF'
+                    ledArray[this.pin].fadeOut()
                     connection.sendUTF(JSON.stringify(send));
                     console.log(this.pin, valueArray[this.pin])
                 }
