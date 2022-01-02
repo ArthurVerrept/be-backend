@@ -1,7 +1,7 @@
 var five = require('johnny-five')
 const http = require('http')
-const WebSocketServer = require('websocket').server;
-const { Led, Sensor } = require('johnny-five');
+const WebSocketServer = require('websocket').server
+const { Led, Sensor } = require('johnny-five')
 
 var board = new five.Board()
 
@@ -10,9 +10,7 @@ board.on('ready', function() {
 
     let connection
     // Create server on arduino
-    const httpServer = http.createServer((req, res) => {
-        console.log('we have received a request')
-    })
+    const httpServer = http.createServer(() => {})
 
     // create a websocket server and pass it the http server we created to use
     const wsServer = new WebSocketServer({
@@ -33,7 +31,6 @@ board.on('ready', function() {
 
             var led = new Led(i+2)
             ledArray[i] = led
-            console.log(i)
             valueArray.push('OFF') 
         }
 
@@ -41,7 +38,6 @@ board.on('ready', function() {
         
         sensorArray.forEach((sensor) => {
             sensor.on("change", function() {
-                console.log(this.pin, this.value)
                 if (this.value > 0 && valueArray[this.pin] === 'OFF') {
                     let send = {
                         sensor: this.pin,
@@ -49,8 +45,7 @@ board.on('ready', function() {
                     }
                     ledArray[this.pin].on()
                     valueArray[this.pin] = 'ON'
-                    connection.sendUTF(JSON.stringify(send));
-                    console.log(this.pin, valueArray[this.pin])
+                    connection.sendUTF(JSON.stringify(send))
                 }
     
                 if (this.value === 0 && valueArray[this.pin] !== 'OFF') {
@@ -60,13 +55,12 @@ board.on('ready', function() {
                     }
                     valueArray[this.pin] = 'OFF'
                     ledArray[this.pin].fadeOut(250)
-                    connection.sendUTF(JSON.stringify(send));
-                    console.log(this.pin, valueArray[this.pin])
+                    connection.sendUTF(JSON.stringify(send))
                 }
             })
         })
     })
 
     httpServer.listen(4000, () => console.log('server listening on port 4000'))
-});
+})
 
