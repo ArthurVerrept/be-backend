@@ -21,6 +21,7 @@ board.on('ready', function() {
         connection = request.accept(null, request.origin)
         
         const sensorAmount = 9
+        const PRESSURE_THRESHOLD = 0
 
         let valueArray = []
         let ledArray = {}
@@ -38,7 +39,7 @@ board.on('ready', function() {
         
         sensorArray.forEach((sensor) => {
             sensor.on("change", function() {
-                if (this.value > 0 && valueArray[this.pin] === 'OFF') {
+                if (this.value > PRESSURE_THRESHOLD && valueArray[this.pin] === 'OFF') {
                     let send = {
                         sensor: this.pin,
                         val: 'ON'
@@ -48,7 +49,7 @@ board.on('ready', function() {
                     connection.sendUTF(JSON.stringify(send))
                 }
     
-                if (this.value === 0 && valueArray[this.pin] !== 'OFF') {
+                if (this.value === PRESSURE_THRESHOLD && valueArray[this.pin] !== 'OFF') {
                     let send = {
                         sensor: this.pin,
                         val: 'OFF'
