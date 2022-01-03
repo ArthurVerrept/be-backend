@@ -24,14 +24,14 @@ board.on('ready', function() {
         const PRESSURE_THRESHOLD = 0
 
         let stateArray = []
-        let ledArray = {}
+        let ledObj = {}
         let sensorArray = []
         for (let i = 0; i < sensorAmount; i++) {
             var sensor = new Sensor(i)
             sensorArray.push(sensor)
 
             var led = new Led(i+2)
-            ledArray[i] = led
+            ledObj[i] = led
             stateArray.push('OFF') 
         }
 
@@ -44,7 +44,7 @@ board.on('ready', function() {
                         sensor: this.pin,
                         val: 'ON'
                     }
-                    ledArray[this.pin].on()
+                    ledObj[this.pin].on()
                     stateArray[this.pin] = 'ON'
                     connection.sendUTF(JSON.stringify(send))
                 }
@@ -55,7 +55,7 @@ board.on('ready', function() {
                         val: 'OFF'
                     }
                     stateArray[this.pin] = 'OFF'
-                    ledArray[this.pin].fadeOut(250)
+                    ledObj[this.pin].fadeOut(250)
                     connection.sendUTF(JSON.stringify(send))
                 }
             })
